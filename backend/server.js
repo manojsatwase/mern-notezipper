@@ -14,8 +14,7 @@ app.get('/',(req,res)=>{
    res.send('API is Running...');
 })
 
-app.get("/api/notes",(req,res)=>{
-   const notes =  
+app.get("/api/notes",(req,res)=>{ 
    res.json(notes);
 })
 app.get('/api/data', (req, res) => {
@@ -27,6 +26,7 @@ app.get('/api/notes/:id',(req,res)=>{
  }) 
 
  app.use('/api/users',userRoutes);
+ 
 
  // error middlewares
  app.use(notFound);

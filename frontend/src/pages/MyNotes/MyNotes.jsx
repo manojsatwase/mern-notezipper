@@ -9,7 +9,6 @@ import "./MyNotes.css";
 const MyNotes = () => {
   const [notes,setNotes] = useState([]);
   // const [toggle,setToggle] = useState(false);
-  const [count,setCount] = useState(0);
 
   const deleteHandler = id=>{
     if(window.confirm("Are You Sure ?")){
@@ -32,6 +31,8 @@ const fetchNotes = async () => {
     fetchNotes();
   },[]);
  
+
+
   return (
     <MainHeading title="Welcome Back Manoj Satwase...">
         <Link to="createnotes">
