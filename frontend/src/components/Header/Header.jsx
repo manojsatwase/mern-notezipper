@@ -1,10 +1,13 @@
 import {Navbar,Container,Nav,NavDropdown,Form} from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (
     <Navbar expand="lg" bg="primary" variant='dark' className="bg-body-tertiary">
     <Container>
-      <Navbar.Brand href="/">Note Zipper</Navbar.Brand>
+      <Navbar.Brand>
+        <Link to="/">Note Zipper</Link>
+      </Navbar.Brand>
       <Navbar.Toggle aria-controls="navbarScroll" />
       <Navbar.Collapse id="navbarScroll">
         <Nav
@@ -21,13 +24,14 @@ const Header = () => {
           />
         </Form>
         </Nav>
-          <Nav.Link href="#action1">My Notes</Nav.Link>
+          <Link to="mynotes">My Notes</Link>
           <NavDropdown title="Manoj Satwase" id="navbarScrollingDropdown">
-            <NavDropdown.Item href="myprofile">My Profile</NavDropdown.Item>
-
+            <NavDropdown.Item>
+              <Link to="myprofile">My Profile</Link>
+            </NavDropdown.Item>
             <NavDropdown.Divider />
-            <NavDropdown.Item href="logout">
-              Logout
+            <NavDropdown.Item>
+              <Link to="/">Logout</Link>
             </NavDropdown.Item>
           </NavDropdown>
       </Navbar.Collapse>
