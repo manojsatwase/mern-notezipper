@@ -2,8 +2,10 @@ const express = require('express');
 const notes = require('./data/notes');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
-const userRoutes = require('./routes/userRoutes');
 const { notFound, errorHandler } = require('./middlewares/errorMiddlewares');
+const userRoutes = require('./routes/userRoutes');
+const noteRoutes = require('./routes/noteRoutes');
+const path = require('path');
 
 const app = express();
 dotenv.config();
@@ -14,19 +16,28 @@ app.get('/',(req,res)=>{
    res.send('API is Running...');
 })
 
-app.get("/api/notes",(req,res)=>{ 
-   res.json(notes);
-})
-app.get('/api/data', (req, res) => {
-   res.json({ message: 'Hello from the backend!' });
-});
-app.get('/api/notes/:id',(req,res)=>{
-    const note = notes.find((n=>n._id === req.params.id))
-    res.json(note);
- }) 
-
  app.use('/api/users',userRoutes);
- 
+ app.use("/api/notes",noteRoutes);
+
+// --------------Deployement-----------------
+
+// signify current working directory to build are frontend build folder
+ const __dirname1 = path.resolve();
+
+ if(process.env.NODE_ENV === "production"){
+   app.use(express.static(path.join(__dirname1,"/frontend/build")));
+
+   // api call
+   app.get("*",(req,res)=>{
+    res.sendFile(path.resolve(__dirname1,"frontend","build","index.html"))  
+   })
+ }else{
+   app.get("/",(req,res)=>{
+      res.send("API Is Running Successfully");
+   })
+ }
+
+ // --------------Deployement-----------------
 
  // error middlewares
  app.use(notFound);

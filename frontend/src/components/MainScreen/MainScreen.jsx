@@ -1,7 +1,7 @@
 import { Container, Row } from "react-bootstrap";
-import "./MainHeading.css";
+import "./MainScreen.css";
 
-const MainHeading = ({title,children}) => {
+const MainScreen = ({title,children}) => {
   return (
     <div className="main__heding">
        <Container>
@@ -22,4 +22,4 @@ const MainHeading = ({title,children}) => {
   )
 }
 
-export default MainHeading;
+export default MainScreen;

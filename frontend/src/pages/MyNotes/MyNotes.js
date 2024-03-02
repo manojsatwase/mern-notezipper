@@ -1,48 +1,62 @@
-import { useEffect, useState } from "react";
-import {Link} from "react-router-dom";
-import MainHeading from "../../components/MainHeader/MainHeading"
+import { useEffect, } from "react";
+import {Link, useNavigate} from "react-router-dom";
+import MainScreen from "../../components/MainScreen/MainScreen";
 import { Accordion, Badge, Button, Card } from "react-bootstrap";
-import axios from 'axios';
 
 import "./MyNotes.css";
+import { useDispatch, useSelector } from "react-redux";
+import { capitalize } from "../../constant";
+import { useCallAPI } from "../../customHooks/useCallAPI";
+import Loading from "../../components/Loading";
+import ErrorMessage from "../../components/ErrorMessage";
 
 const MyNotes = () => {
-  const [notes,setNotes] = useState([]);
   // const [toggle,setToggle] = useState(false);
+  const userInfo = useSelector(state=>state.createUser?.userInfo);
+  const searchText = useSelector(state => state.searchText.search);
+ const navigate = useNavigate();
+
+
+const {loading,error,fetchNotes,notes,notesId,deleteNoteAPI} = useCallAPI();
+const createnote = useSelector(state=>state.noteCreate.createnote);
 
   const deleteHandler = id=>{
     if(window.confirm("Are You Sure ?")){
-      const deleteNotes = notes.filter(note=>note._id !== id);
-      setNotes(deleteNotes);
-    }
+      // const deleteNotes = notes.filter(note=>note._id !== id);
+      // setNotes(deleteNotes);
+      deleteNoteAPI(id);
+    } 
   }
 // const handleToggle = () => setToggle(prevState=>!prevState);
 
-const fetchNotes = async () => {
-   try{
-    const {data} = await axios.get('/api/notes');
-    setNotes(data);
-   }catch(err){
-    console.log(err);
-   }
-}
 
-  useEffect(()=>{
-    fetchNotes();
-  },[]);
- 
+useEffect(() => {
+  fetchNotes();
+}, [notesId]); // Only fetch notes when createnote changes
 
+useEffect(() => {
+  if (!userInfo) {
+    navigate("/");
+  }
+}, [userInfo, navigate]); // Navigate to "/" only when userInfo changes
+
+ const filteredNoteNotes = filteredNote => filteredNote.title.toLowerCase().includes(searchText?.toLowerCase())
+ const reversedNotes = notes ? [...notes].reverse().filter(filteredNoteNotes) : [];
 
   return (
-    <MainHeading title="Welcome Back Manoj Satwase...">
-        <Link to="createnotes">
+    <MainScreen title={`Welcome Back ${capitalize(userInfo?.name)}`}>
+        <Link to="createnote">
             <Button style={{marginLeft:10,marginBottom:6}} size="lg">
-                Create New Note
+                Create New Task
             </Button>
          </Link>
-         {!notes.length && <div>Loading...</div>}
+         {error && <ErrorMessage variant="danger">
+           {error}
+          </ErrorMessage>}
+        
+         {loading && <Loading/>}
             {
-              notes.map(note=>(
+              reversedNotes?.map(note=>(
               <Accordion key={note._id}>
               <Accordion.Item eventKey="0">
              <Card style={{margin:10}}>
@@ -60,7 +74,7 @@ const fetchNotes = async () => {
                    </Accordion.Header>
                   </span>
               <div>
-                <Button href={`/note/${note._id}`}>
+                <Button href={`/notes/${note._id}`}>
                     Edit
                 </Button>
                 <Button
@@ -78,11 +92,9 @@ const fetchNotes = async () => {
                     </Badge>
                   </h4>
                   <blockquote className="blockquote mb-0">
-                  <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus distinctio voluptatum at itaque, voluptatem mollitia autem dignissimos
-                     dolorem ipsum molestias eius sequi ab quia praesentium. 
-                     Sunt impedit aperiam voluptatem. Reprehenderit?</p>
+                  <p>{note?.content}</p>
                      <footer>
-                     <title className="blockquote-footer" title="Source Title">Created On - date</title>
+                     <title className="blockquote-footer" title="Source Title">Created On - {note?.createdAt.substring(0,10)}</title>
                      </footer>   
                 </blockquote>
               </Card.Body>
@@ -93,7 +105,7 @@ const fetchNotes = async () => {
              </Accordion>
               ))
             }
-    </MainHeading>
+    </MainScreen>
   )
 }
 

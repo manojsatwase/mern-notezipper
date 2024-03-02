@@ -1,9 +1,25 @@
 import { Button, Container, Row } from "react-bootstrap";
 
 import "./LandingPage.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { createUser } from "../../redux/slices/createUserSlice";
 
 const LandingPage = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+  
+    useEffect(()=>{
+      const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+      if(userInfo){
+        navigate("/mynotes");
+        dispatch(createUser(userInfo));
+      }
+  
+    },[navigate,dispatch])
+  
+  
   return (
     <div className="main">
         <Container>
